@@ -13,6 +13,8 @@ public class RushTeam {
 	private String name;
 	private String displayName;
 	private ChatColor color;
+	private int remainingPlayers;
+	private int totalPlayers;
 	
 	public RushTeam(String name, String displayName) {
 		setName(name);
@@ -44,10 +46,6 @@ public class RushTeam {
 	public void setDeaths(int deaths) {
 		this.deaths = deaths;
 	}
-	
-	public double getRatio() {
-		return ratio;
-	}
 
 	public ArrayList<String> getPlayerList() {
 		return playerList;
@@ -75,6 +73,30 @@ public class RushTeam {
 
 	public void setColor(ChatColor color) {
 		this.color = color;
+	}
+
+	public int getRemainingPlayers() {
+		return remainingPlayers;
+	}
+
+	public void setRemainingPlayers(int remainingPlayers) {
+		this.remainingPlayers = remainingPlayers;
+	}
+
+	public int getTotalPlayers() {
+		return totalPlayers;
+	}
+
+	public void setTotalPlayers(int totalPlayers) {
+		this.totalPlayers = totalPlayers;
+	}
+
+	public double getRatio() {
+		return ratio;
+	}
+
+	public void setRatio(double ratio) {
+		this.ratio = ratio;
 	}
 	
 }

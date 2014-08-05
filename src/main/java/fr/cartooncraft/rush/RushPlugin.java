@@ -1,5 +1,7 @@
 package fr.cartooncraft.rush;
 
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
@@ -19,6 +21,8 @@ import org.bukkit.scoreboard.Objective;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.Team;
 
+import fr.cartooncraft.rush.events.listeners.DeathEvent;
+
 public class RushPlugin extends JavaPlugin {
 	
 	private static Map<String, RushPlayer> rushPlayers = new HashMap<>();
@@ -29,12 +33,20 @@ public class RushPlugin extends JavaPlugin {
 	private static int hours = 0;
 	private static int minutes = 0;
 	private static int seconds = 0;
+	private static String hoursString = "0";
+	private static String minutesString = "00";
+	private static String secondsString = "00";
+	private NumberFormat formatter = new DecimalFormat("00");
+	
+	private static Objective deathsObj;
+	private static Objective killsObj;
 
 	public void onEnable() {
 		getLogger().info("CC-Rush is loaded.");
 		createRushTeam("Orange", "Orange");
 		createRushTeam("Blue", "Blue");
 		startSBRefresh();
+		Bukkit.getPluginManager().registerEvents(new DeathEvent(), this);
 	}
 	
 	public void onDisable() {
@@ -48,29 +60,60 @@ public class RushPlugin extends JavaPlugin {
 			public void run() {
 				if(!isGameRunning())
 					setScoreboard();
-				getLogger().info("SCOREBOARD");
+				else {
+					seconds++;
+					if(seconds == 60) {
+						seconds = 0;
+						minutes++;
+					}
+					if(minutes == 60) {
+						hours++;
+					}
+					minutesString = formatter.format(minutes);
+					secondsString = formatter.format(seconds);
+					setScoreboard();
+				}
 			}
 			
 		}, 20L, 20L);
 	}
 	
 	public void setScoreboard() {
-		if(!isGameRunning()) {
-			for(Player p : Bukkit.getOnlinePlayers()) {
-				Scoreboard sb = Bukkit.getScoreboardManager().getNewScoreboard();
-				CraftPlayer cp = (CraftPlayer)p;
-				int ping = cp.getHandle().ping;
-				Random r = new Random();
-				String sbobjname = "RUSH"+r.nextInt(10000000);
-				Objective obj = sb.registerNewObjective(sbobjname, "dummy");
-				obj = sb.getObjective(sbobjname);
-				obj.setDisplayName(ChatColor.GREEN+"RUSH");
-				obj.getScore(Bukkit.getOfflinePlayer(ChatColor.GRAY+"Ping : "+ChatColor.GREEN+ping)).setScore(2);
-				obj.getScore(Bukkit.getOfflinePlayer(" ")).setScore(1);
-				obj.getScore(Bukkit.getOfflinePlayer(ChatColor.GREEN+""+ChatColor.ITALIC+"Waiting...")).setScore(0);
-				obj.setDisplaySlot(DisplaySlot.SIDEBAR);
-				p.setScoreboard(sb);
+		for(Player p : Bukkit.getOnlinePlayers()) {
+			Scoreboard sb = Bukkit.getScoreboardManager().getNewScoreboard();
+			Random r = new Random();
+			String sbobjname = "RUSH"+r.nextInt(10000000);
+			int ping = ((CraftPlayer)p).getHandle().ping;
+			Objective obj = sb.registerNewObjective(sbobjname, "dummy");
+			obj = sb.getObjective(sbobjname);
+			obj.setDisplayName(ChatColor.GREEN+"RUSH");
+			obj.getScore(Bukkit.getOfflinePlayer(ChatColor.GRAY+"Ping : "+ChatColor.GREEN+ping)).setScore(10);
+			obj.getScore(Bukkit.getOfflinePlayer(" ")).setScore(9);
+			if(!isGameRunning()) {
+				obj.getScore(Bukkit.getOfflinePlayer(ChatColor.GREEN+""+ChatColor.ITALIC+"Waiting...")).setScore(8);
 			}
+			else { // if game running
+				sb = addDefaultScoreboard(sb);
+				obj.getScore(Bukkit.getOfflinePlayer(ChatColor.GREEN+""+ChatColor.ITALIC+"PLAYING !")).setScore(8);
+				obj.getScore(Bukkit.getOfflinePlayer("  ")).setScore(7);
+				obj.getScore(Bukkit.getOfflinePlayer(ChatColor.BLUE+""+rushTeams.get("Blue").getRemainingPlayers()+ChatColor.GRAY+"v"+ChatColor.GOLD+""+rushTeams.get("Orange").getRemainingPlayers())).setScore(6);
+				if(isARushPlayer(p)) {
+					RushPlayer rp = getRushPlayer(p);
+					obj.getScore(Bukkit.getOfflinePlayer("   ")).setScore(5);
+					obj.getScore(Bukkit.getOfflinePlayer(""+ChatColor.GRAY+"Kills : "+ChatColor.GREEN+rp.getKills())).setScore(4);
+					obj.getScore(Bukkit.getOfflinePlayer(""+ChatColor.GRAY+"Deaths : "+ChatColor.GREEN+rp.getDeaths())).setScore(3);
+					obj.getScore(Bukkit.getOfflinePlayer(""+ChatColor.GRAY+"Ratio : "+ChatColor.GREEN+rp.getStringRatio())).setScore(2);
+					obj.getScore(Bukkit.getOfflinePlayer("    ")).setScore(1);
+					if(hours != 0) {
+						obj.getScore(Bukkit.getOfflinePlayer(ChatColor.WHITE+hoursString+ChatColor.GRAY+":"+ChatColor.WHITE+minutesString+ChatColor.GRAY+":"+ChatColor.WHITE+secondsString)).setScore(0);
+					}
+					else {
+						obj.getScore(Bukkit.getOfflinePlayer(ChatColor.WHITE+minutesString+ChatColor.GRAY+":"+ChatColor.WHITE+secondsString)).setScore(0);
+					}
+				}
+			}
+			obj.setDisplaySlot(DisplaySlot.SIDEBAR);
+			p.setScoreboard(sb);
 		}
 	}
 	
@@ -80,7 +123,7 @@ public class RushPlugin extends JavaPlugin {
 				if(args.length >= 3) { // /rush players <playerName>
 					if(Bukkit.getPlayer(args[1]) != null) { // /rush players <playerName != null>
 						Player p = Bukkit.getPlayer(args[1]);
-						RushPlayer rp = getRushPlayer(p);
+						RushPlayer rp = getOrCreateRushPlayer(p);
 						if(args[2].equalsIgnoreCase("team")) { // /rush players <playerName != null> team
 							if(args[3].equalsIgnoreCase("join")) { // /rush players <playerName != null> team join
 								if(args[4].equalsIgnoreCase("Blue") || args[4].equalsIgnoreCase("1")) { // /rush players <playerName != null> team <Blue|1>
@@ -101,6 +144,7 @@ public class RushPlugin extends JavaPlugin {
 							}
 							else if(args[3].equalsIgnoreCase("leave")) { // /rush players <playerName != null> team leave
 								rp.setTeamName(null);
+								rushPlayers.remove(p.getName());
 								sender.sendMessage(ChatColor.GRAY+CCCommand.getPlayerName(p)+ChatColor.GRAY+" has left his team.");
 							}
 							else if(args[3].equalsIgnoreCase("getTeam")) { // /rush players <playerName != null> team getTeam
@@ -163,16 +207,23 @@ public class RushPlugin extends JavaPlugin {
 					sender.sendMessage(ChatColor.RED+"Nope! Usage: /rush teams <list>");
 				}
 			}
-			else if(args[0].equalsIgnoreCase("start")) {
+			else if(args[0].equalsIgnoreCase("start")) {				
 				Scoreboard sb = Bukkit.getScoreboardManager().getMainScoreboard();
+				for(Team t : sb.getTeams().toArray(new Team[0])) {
+					t.unregister();
+				}
 				for(RushTeam rt : getRushTeams()) {
 					Team t = sb.registerNewTeam(rt.getName());
 					t.setAllowFriendlyFire(false);
 					t.setPrefix(""+rt.getColor());
 					t.setDisplayName(rt.getDisplayName());
+					int nbPlayers = 0;
 					for(String playerName : rt.getPlayerList().toArray(new String[0])) {
 						t.addPlayer(Bukkit.getOfflinePlayer(playerName));
+						nbPlayers++;
 					}
+					rt.setTotalPlayers(nbPlayers);
+					rt.setRemainingPlayers(nbPlayers);
 				}
 				for(RushPlayer rp : getRushPlayers()) {
 					rp.setDeaths(0);
@@ -189,6 +240,9 @@ public class RushPlugin extends JavaPlugin {
 					p.closeInventory();
 					p.getActivePotionEffects().clear();
 				}
+				deathsObj = sb.registerNewObjective("rush_deaths", "deathCount");
+				killsObj = sb.registerNewObjective("rush_kills", "playerKillCount");
+				isGameRunning = true;
 			}
 			else {
 				sender.sendMessage(ChatColor.RED+"Nope! Usage: /rush <players|teams|start>");
@@ -200,12 +254,59 @@ public class RushPlugin extends JavaPlugin {
 		return true;
 	}
 	
+	public static boolean isARushPlayer(String playerName) {
+		if(getRushPlayer(playerName) != null) {
+			return true;
+		}
+		return false;
+	}
+	
+	public boolean isARushPlayer(Player p) {
+		return isARushPlayer(p.getName());
+	}
+	
+	public static RushPlayer getRushPlayer(String playerName) {
+		if(rushPlayers.get(playerName) != null)
+			return rushPlayers.get(playerName);
+		return null;
+	}
+	
 	public RushPlayer getRushPlayer(Player p) {
-		if(rushPlayers.get(p.getName()) != null)
-			return rushPlayers.get(p.getName());
-		RushPlayer rushPlayer = new RushPlayer(p);
-		rushPlayers.put(p.getName(), rushPlayer);
-		return(rushPlayer);
+		return getRushPlayer(p.getName());
+	}
+	
+	public Scoreboard addDefaultScoreboard(Scoreboard sb) {
+		for(RushTeam rt : getRushTeams()) {
+			Team t = sb.registerNewTeam(rt.getName());
+			t.setAllowFriendlyFire(false);
+			t.setPrefix(""+rt.getColor());
+			t.setDisplayName(rt.getDisplayName());
+			for(String playerName : rt.getPlayerList().toArray(new String[0])) {
+				t.addPlayer(Bukkit.getOfflinePlayer(playerName));
+			}
+		}
+		Objective HPobj = sb.registerNewObjective("HP", "dummy");
+		for(RushPlayer rp : getRushPlayers()) {
+			HPobj.getScore(Bukkit.getOfflinePlayer(rp.getThePlayerName())).setScore((int)rp.getPlayer().getHealth());
+		}
+		HPobj.setDisplayName("HP");
+		HPobj.setDisplaySlot(DisplaySlot.BELOW_NAME);
+		
+		return sb;
+	}
+	
+	public Scoreboard getDefaultScoreboard() {
+		return addDefaultScoreboard(Bukkit.getScoreboardManager().getNewScoreboard());
+	}
+	
+	public RushPlayer getOrCreateRushPlayer(String playerName) {
+		if(!isARushPlayer(playerName))
+			createRushPlayer(playerName);
+		return rushPlayers.get(playerName);
+	}
+	
+	public RushPlayer getOrCreateRushPlayer(Player p) {
+		return getOrCreateRushPlayer(p.getName());
 	}
 	
 	public static RushTeam getRushTeam(String name) {
@@ -219,6 +320,16 @@ public class RushPlugin extends JavaPlugin {
 		RushTeam rushTeam = new RushTeam(name, displayName);
 		rushTeams.put(name, rushTeam);
 		return;
+	}
+	
+	public static void createRushPlayer(String playerName) {
+		RushPlayer rp = new RushPlayer(playerName);
+		rushPlayers.put(playerName, rp);
+		return;
+	}
+	
+	public static void createRushPlayer(Player p) {
+		createRushPlayer(p.getName());
 	}
 	
 	public static void createRushTeam(RushTeam rt) {
@@ -260,6 +371,14 @@ public class RushPlugin extends JavaPlugin {
 
 	public static void setMinutes(int minutes) {
 		RushPlugin.minutes = minutes;
+	}
+
+	public static Objective getDeathsObj() {
+		return deathsObj;
+	}
+
+	public static Objective getKillsObj() {
+		return killsObj;
 	}
 	
 }

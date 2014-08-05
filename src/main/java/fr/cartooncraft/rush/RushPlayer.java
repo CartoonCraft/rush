@@ -1,5 +1,7 @@
 package fr.cartooncraft.rush;
 
+import java.text.DecimalFormat;
+
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
@@ -30,6 +32,14 @@ public class RushPlayer {
 	public int getKills() {
 		return kills;
 	}
+	
+	public void refreshKills() {
+		this.kills = RushPlugin.getKillsObj().getScore(Bukkit.getOfflinePlayer(thePlayerName)).getScore();
+	}
+	
+	public void refreshDeaths() {
+		this.deaths = RushPlugin.getDeathsObj().getScore(Bukkit.getOfflinePlayer(thePlayerName)).getScore();
+	}
 
 	public void setKills(int kills) {
 		this.kills = kills;
@@ -42,9 +52,24 @@ public class RushPlayer {
 	public void setDeaths(int deaths) {
 		this.deaths = deaths;
 	}
-
+	
+	public double setRatio() {
+		if(deaths != 0) {
+			this.ratio = kills/deaths;
+		}
+		else {
+			this.ratio = 0;
+		}
+		return this.ratio;
+	}
+	
 	public double getRatio() {
-		return ratio;
+		return this.ratio;
+	}
+	
+	public String getStringRatio() {
+		DecimalFormat df = new DecimalFormat("0.##");
+		return df.format(this.ratio);
 	}
 
 	public String getTeamName() {
