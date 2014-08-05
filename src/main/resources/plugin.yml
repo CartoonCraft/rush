@@ -1,0 +1,7 @@
+name: Rush
+main: fr.cartooncraft.rush.RushPlugin
+version: 1.0.0
+commands:
+    rush:
+        description: Rush command.
+        usage: /rush
