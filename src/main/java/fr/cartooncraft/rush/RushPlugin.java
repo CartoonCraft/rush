@@ -2,6 +2,7 @@ package fr.cartooncraft.rush;
 
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
@@ -9,6 +10,7 @@ import java.util.Random;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -27,6 +29,7 @@ public class RushPlugin extends JavaPlugin {
 	
 	private static Map<String, RushPlayer> rushPlayers = new HashMap<>();
 	private static Map<String, RushTeam> rushTeams = new HashMap<>();
+	private static Map<String, RushTeam> deadTeams = new HashMap<>();
 	
 	private static boolean isGameRunning = false;
 	
@@ -46,7 +49,7 @@ public class RushPlugin extends JavaPlugin {
 		createRushTeam("Orange", "Orange");
 		createRushTeam("Blue", "Blue");
 		startSBRefresh();
-		Bukkit.getPluginManager().registerEvents(new DeathEvent(), this);
+		Bukkit.getPluginManager().registerEvents(new DeathEvent(this), this);
 	}
 	
 	public void onDisable() {
@@ -216,11 +219,13 @@ public class RushPlugin extends JavaPlugin {
 					Team t = sb.registerNewTeam(rt.getName());
 					t.setAllowFriendlyFire(false);
 					t.setPrefix(""+rt.getColor());
+					t.setSuffix(""+ChatColor.RESET);
 					t.setDisplayName(rt.getDisplayName());
 					int nbPlayers = 0;
 					for(String playerName : rt.getPlayerList().toArray(new String[0])) {
 						t.addPlayer(Bukkit.getOfflinePlayer(playerName));
 						nbPlayers++;
+						getOrCreateRushPlayer(Bukkit.getPlayer(playerName));
 					}
 					rt.setTotalPlayers(nbPlayers);
 					rt.setRemainingPlayers(nbPlayers);
@@ -240,6 +245,8 @@ public class RushPlugin extends JavaPlugin {
 					p.closeInventory();
 					p.getActivePotionEffects().clear();
 				}
+				removeObj(sb, "rush_deaths");
+				removeObj(sb, "rush_kills");
 				deathsObj = sb.registerNewObjective("rush_deaths", "deathCount");
 				killsObj = sb.registerNewObjective("rush_kills", "playerKillCount");
 				isGameRunning = true;
@@ -248,10 +255,21 @@ public class RushPlugin extends JavaPlugin {
 				sender.sendMessage(ChatColor.RED+"Nope! Usage: /rush <players|teams|start>");
 			}
 		}
+		else if(cmd.getName().equalsIgnoreCase("getobj")) {
+			Scoreboard sb = Bukkit.getScoreboardManager().getMainScoreboard();
+			Objective obj = sb.getObjective(args[0]);
+			sender.sendMessage(""+obj.getScore(Bukkit.getOfflinePlayer(((Player)sender).getName())).getScore());
+		}
 		else {
 			return false;
 		}
 		return true;
+	}
+	
+	public void removeObj(Scoreboard sb, String objectiveName) {
+		if(sb.getObjective(objectiveName) != null) {
+			sb.getObjective(objectiveName).unregister();
+		}
 	}
 	
 	public static boolean isARushPlayer(String playerName) {
@@ -271,7 +289,7 @@ public class RushPlugin extends JavaPlugin {
 		return null;
 	}
 	
-	public RushPlayer getRushPlayer(Player p) {
+	public static RushPlayer getRushPlayer(Player p) {
 		return getRushPlayer(p.getName());
 	}
 	
@@ -280,6 +298,7 @@ public class RushPlugin extends JavaPlugin {
 			Team t = sb.registerNewTeam(rt.getName());
 			t.setAllowFriendlyFire(false);
 			t.setPrefix(""+rt.getColor());
+			t.setSuffix(ChatColor.RESET+"");
 			t.setDisplayName(rt.getDisplayName());
 			for(String playerName : rt.getPlayerList().toArray(new String[0])) {
 				t.addPlayer(Bukkit.getOfflinePlayer(playerName));
@@ -293,6 +312,36 @@ public class RushPlugin extends JavaPlugin {
 		HPobj.setDisplaySlot(DisplaySlot.BELOW_NAME);
 		
 		return sb;
+	}
+	
+	public static void endOfTheGame(final RushTeam winnerTeam) {
+		Bukkit.getScheduler().scheduleSyncDelayedTask(new RushPlugin(), new Runnable() {
+			
+			@Override
+			public void run() {
+				Bukkit.broadcastMessage(""+ChatColor.RED+ChatColor.BOLD+"Congrats! The "+winnerTeam.getColor()+winnerTeam.getName()+ChatColor.RED+" has won with "+winnerTeam.getRemainingPlayers()+" players remaining!");
+				double x = -221.5;
+				double y = 76;
+				double z = 58.5;
+				Location loc = new Location(Bukkit.getWorlds().get(0), x, y, z);
+				for(Player p : Bukkit.getOnlinePlayers())
+					p.teleport(loc);
+			}
+		}, 2L);
+	}
+	
+	public static void aTeamDied(RushTeam rushTeam) {
+		deadTeams.put(rushTeam.getName(), rushTeam);
+		int remainingTeams = 0;
+		ArrayList<RushTeam> remainingTeamsList = new ArrayList<>();
+		for(RushTeam rt : getRushTeams()) {
+			if(!(rt.getRemainingPlayers() == 0))
+				remainingTeams++;
+		}
+		if(remainingTeams == 1) {
+			RushTeam remainingTeam = remainingTeamsList.get(0);
+			endOfTheGame(remainingTeam);
+		}
 	}
 	
 	public Scoreboard getDefaultScoreboard() {

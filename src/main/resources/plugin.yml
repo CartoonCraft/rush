@@ -5,3 +5,6 @@ commands:
     rush:
         description: Rush command.
         usage: /rush
+    getobj:
+        description: swugyhisof
+        usage: /getobj <objName>
