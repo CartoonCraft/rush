@@ -23,6 +23,7 @@ import org.bukkit.scoreboard.Objective;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.Team;
 
+import fr.cartooncraft.rush.events.listeners.DamageByEntityEvent;
 import fr.cartooncraft.rush.events.listeners.DamageEvent;
 import fr.cartooncraft.rush.events.listeners.DeathEvent;
 import fr.cartooncraft.rush.events.listeners.FoodDownEvent;
@@ -55,6 +56,7 @@ public class RushPlugin extends JavaPlugin {
 		createRushTeam("Orange", "Orange");
 		createRushTeam("Blue", "Blue");
 		startSBRefresh();
+		Bukkit.getPluginManager().registerEvents(new DamageByEntityEvent(this), this);
 		Bukkit.getPluginManager().registerEvents(new DamageEvent(this), this);
 		Bukkit.getPluginManager().registerEvents(new DeathEvent(this), this);
 		Bukkit.getPluginManager().registerEvents(new FoodDownEvent(this), this);
@@ -330,7 +332,7 @@ public class RushPlugin extends JavaPlugin {
 			@Override
 			public void run() {
 				
-				Bukkit.broadcastMessage(""+ChatColor.RED+ChatColor.BOLD+"Congrats! The "+winnerTeam.getColor()+ChatColor.BOLD+winnerTeam.getName()+ChatColor.RED+ChatColor.BOLD+" has won with "+winnerTeam.getRemainingPlayers()+" player(s) remaining, in "+hours+" hour(s), "+minutes+" minute(s) and "+seconds+" second(s)!");
+				Bukkit.broadcastMessage(""+ChatColor.RED+ChatColor.BOLD+"Congrats! The "+winnerTeam.getColor()+ChatColor.BOLD+winnerTeam.getName()+ChatColor.RED+ChatColor.BOLD+" team has won with "+winnerTeam.getRemainingPlayers()+" player(s) remaining, in "+hours+" hour(s), "+minutes+" minute(s) and "+seconds+" second(s)!");
 				double x = -221.5;
 				double y = 76;
 				double z = 58.5;

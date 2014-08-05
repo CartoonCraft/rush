@@ -17,16 +17,18 @@ public class GriefEvent implements Listener {
 	
 	@EventHandler
 	public void onBlockBreakEvent(BlockBreakEvent ev) {
-		if(ev.getPlayer().isOp() || (!RushPlugin.isGameRunning() || RushPlugin.isGameFinished())) {
-			ev.setCancelled(true);
+		// if (!this.p.isGameRunning() && !ev.getPlayer().isOp())
+		if(!RushPlugin.isGameRunning() || RushPlugin.isGameFinished()) {
+			if(!ev.getPlayer().isOp())
+				ev.setCancelled(true);
 		}
 	}
 	
 	@EventHandler
 	public void onBlockPlaceEvent(BlockPlaceEvent ev) {
-		if(ev.getPlayer().isOp() || (!RushPlugin.isGameRunning() || RushPlugin.isGameFinished())) {
-			ev.setCancelled(true);
-		}
+		if(!RushPlugin.isGameRunning() || RushPlugin.isGameFinished())
+			if(!ev.getPlayer().isOp())
+				ev.setCancelled(true);
 	}
 	
 }

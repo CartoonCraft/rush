@@ -5,7 +5,7 @@ import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.player.PlayerLoginEvent;
+import org.bukkit.event.player.PlayerJoinEvent;
 
 import fr.cartooncraft.rush.RushPlugin;
 
@@ -18,7 +18,7 @@ public class LoginEvent implements Listener {
 	}
 	
 	@EventHandler
-	public void onLogin(PlayerLoginEvent e) {
+	public void onJoin(PlayerJoinEvent e) {
 		Player p = e.getPlayer();
 		p.setGameMode(GameMode.ADVENTURE);
 		if(RushPlugin.isGameRunning())
