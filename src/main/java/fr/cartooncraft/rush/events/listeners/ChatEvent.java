@@ -21,7 +21,7 @@ public class ChatEvent implements Listener {
 	public void onChat(AsyncPlayerChatEvent ev) {
 		ev.setCancelled(true);
 		Player p = ev.getPlayer();
-		if(RushPlugin.isARushPlayer(p)) {
+		if(RushPlugin.isARushPlayer(p) && RushPlugin.isGameRunning()) {
 			if(p.isOp())
 				Bukkit.broadcastMessage(ChatColor.RED+"<"+ChatColor.RESET+RushPlugin.getRushPlayer(p).getTeam().getColor()+p.getName()+ChatColor.RED+"> "+ChatColor.RESET+ChatColor.WHITE+ev.getMessage());
 			else
