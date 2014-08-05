@@ -41,7 +41,7 @@ public class RushPlugin extends JavaPlugin {
 	private static boolean isGameRunning = false;
 	private static boolean isGameFinished = false;
 	
-	static Location podiumLoc = new Location(Bukkit.getWorlds().get(0), -221.5, 76, 58.5);
+	private static Location podiumLoc;
 	
 	private static int hours = 0;
 	private static int minutes = 0;
@@ -67,6 +67,7 @@ public class RushPlugin extends JavaPlugin {
 		Bukkit.getPluginManager().registerEvents(new GriefEvent(this), this);
 		Bukkit.getPluginManager().registerEvents(new LoginEvent(this), this);
 		Bukkit.getPluginManager().registerEvents(new RespawnEvent(this), this);
+		podiumLoc = new Location(Bukkit.getWorlds().get(0), -221.5, 76, 58.5);
 	}
 	
 	public void onDisable() {
