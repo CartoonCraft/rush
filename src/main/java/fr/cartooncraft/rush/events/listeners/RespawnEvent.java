@@ -21,35 +21,29 @@ public class RespawnEvent implements Listener {
 	
 	@EventHandler
 	public void onRespawn(PlayerRespawnEvent e) {
-		/*for(final RushPlayer rp : RushPlugin.getRushPlayers()) {
-			Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
-				
-				@Override
-				public void run() {
-
-					rp.refreshDeaths();
-					rp.refreshKills();
+		if(RushPlugin.isGameFinished()) {
+			e.getPlayer().teleport(RushPlugin.getPodiumLoc());
+		}
+		else {
+			Player p = e.getPlayer();
+			RushPlayer rp = RushPlugin.getRushPlayer(p);
+			if(!e.isBedSpawn() && RushPlugin.isGameRunning() && !rp.isDisqualified()) {
+				rp.setDisqualified(true);
+				RushTeam rt = RushPlugin.getRushPlayer(p).getTeam();
+				rt.setRemainingPlayers(rt.getRemainingPlayers() - 1);			
+				switch(rt.getRemainingPlayers()) {
+					case 1:
+						Bukkit.broadcastMessage(rt.getColor()+e.getPlayer().getName()+ChatColor.GRAY+" is disqualified. "+rt.getRemainingPlayers()+" player remaining. Last one!");
+						break;
+					case 0:
+						Bukkit.broadcastMessage(rt.getColor()+e.getPlayer().getName()+ChatColor.GRAY+" is disqualified. The "+rt.getColor()+rt.getName()+ChatColor.GRAY+" team is disqualified.");
+						break;
+					default:
+						Bukkit.broadcastMessage(rt.getColor()+e.getPlayer().getName()+ChatColor.GRAY+" is disqualified. "+rt.getRemainingPlayers()+" players remaining.");
+						break;
 				}
-			}, 2L);
-		}*/
-		Player p = e.getPlayer();
-		RushPlayer rp = RushPlugin.getRushPlayer(p);
-		if(!e.isBedSpawn() && RushPlugin.isGameRunning() && !rp.isDisqualified()) {
-			rp.setDisqualified(true);
-			RushTeam rt = RushPlugin.getRushPlayer(p).getTeam();
-			rt.setRemainingPlayers(rt.getRemainingPlayers() - 1);			
-			switch(rt.getRemainingPlayers()) {
-				case 1:
-					Bukkit.broadcastMessage(rt.getColor()+e.getPlayer().getName()+ChatColor.GRAY+" is disqualified. "+rt.getRemainingPlayers()+" player remaining. Last one!");
-					break;
-				case 0:
-					Bukkit.broadcastMessage(rt.getColor()+e.getPlayer().getName()+ChatColor.GRAY+" is disqualified. The "+rt.getColor()+rt.getName()+ChatColor.GRAY+" team is disqualified.");
-					break;
-				default:
-					Bukkit.broadcastMessage(rt.getColor()+e.getPlayer().getName()+ChatColor.GRAY+" is disqualified. "+rt.getRemainingPlayers()+" players remaining.");
-					break;
+				RushPlugin.aTeamDied(rt);
 			}
-			RushPlugin.aTeamDied(rt);
 		}
 	}
 	

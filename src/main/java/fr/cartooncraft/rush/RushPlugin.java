@@ -23,6 +23,7 @@ import org.bukkit.scoreboard.Objective;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.Team;
 
+import fr.cartooncraft.rush.events.listeners.ChatEvent;
 import fr.cartooncraft.rush.events.listeners.DamageByEntityEvent;
 import fr.cartooncraft.rush.events.listeners.DamageEvent;
 import fr.cartooncraft.rush.events.listeners.DeathEvent;
@@ -40,6 +41,8 @@ public class RushPlugin extends JavaPlugin {
 	private static boolean isGameRunning = false;
 	private static boolean isGameFinished = false;
 	
+	static Location podiumLoc = new Location(Bukkit.getWorlds().get(0), -221.5, 76, 58.5);
+	
 	private static int hours = 0;
 	private static int minutes = 0;
 	private static int seconds = 0;
@@ -56,6 +59,7 @@ public class RushPlugin extends JavaPlugin {
 		createRushTeam("Orange", "Orange");
 		createRushTeam("Blue", "Blue");
 		startSBRefresh();
+		Bukkit.getPluginManager().registerEvents(new ChatEvent(this), this);
 		Bukkit.getPluginManager().registerEvents(new DamageByEntityEvent(this), this);
 		Bukkit.getPluginManager().registerEvents(new DamageEvent(this), this);
 		Bukkit.getPluginManager().registerEvents(new DeathEvent(this), this);
@@ -333,12 +337,8 @@ public class RushPlugin extends JavaPlugin {
 			public void run() {
 				
 				Bukkit.broadcastMessage(""+ChatColor.RED+ChatColor.BOLD+"Congrats! The "+winnerTeam.getColor()+ChatColor.BOLD+winnerTeam.getName()+ChatColor.RED+ChatColor.BOLD+" team has won with "+winnerTeam.getRemainingPlayers()+" player(s) remaining, in "+hours+" hour(s), "+minutes+" minute(s) and "+seconds+" second(s)!");
-				double x = -221.5;
-				double y = 76;
-				double z = 58.5;
-				Location loc = new Location(Bukkit.getWorlds().get(0), x, y, z);
 				for(Player p : Bukkit.getOnlinePlayers())
-					p.teleport(loc);
+					p.teleport(podiumLoc);
 				setGameFinished(true);
 			}
 		}, 2L);
@@ -453,6 +453,10 @@ public class RushPlugin extends JavaPlugin {
 
 	public static void setGameFinished(boolean isGameFinished) {
 		RushPlugin.isGameFinished = isGameFinished;
+	}
+	
+	public static Location getPodiumLoc() {
+		return podiumLoc;
 	}
 	
 }

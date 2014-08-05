@@ -21,8 +21,10 @@ public class LoginEvent implements Listener {
 	public void onJoin(PlayerJoinEvent e) {
 		Player p = e.getPlayer();
 		p.setGameMode(GameMode.ADVENTURE);
-		if(RushPlugin.isGameRunning())
+		if(RushPlugin.isGameRunning() && !RushPlugin.isGameFinished())
 			p.sendMessage(ChatColor.GRAY+"The game is already launched. But you can spectate!");
+		if(RushPlugin.isGameFinished())
+			p.teleport(RushPlugin.getPodiumLoc());
 	}
 	
 }
