@@ -7,6 +7,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerRespawnEvent;
 
+import fr.cartooncraft.rush.RushPlayer;
 import fr.cartooncraft.rush.RushPlugin;
 import fr.cartooncraft.rush.RushTeam;
 
@@ -31,8 +32,10 @@ public class RespawnEvent implements Listener {
 				}
 			}, 2L);
 		}*/
-		if(!e.isBedSpawn() && RushPlugin.isGameRunning()) {
-			Player p = e.getPlayer();
+		Player p = e.getPlayer();
+		RushPlayer rp = RushPlugin.getRushPlayer(p);
+		if(!e.isBedSpawn() && RushPlugin.isGameRunning() && !rp.isDisqualified()) {
+			rp.setDisqualified(true);
 			RushTeam rt = RushPlugin.getRushPlayer(p).getTeam();
 			rt.setRemainingPlayers(rt.getRemainingPlayers() - 1);			
 			switch(rt.getRemainingPlayers()) {
@@ -46,6 +49,7 @@ public class RespawnEvent implements Listener {
 					Bukkit.broadcastMessage(rt.getColor()+e.getPlayer().getName()+ChatColor.GRAY+" is disqualified. "+rt.getRemainingPlayers()+" players remaining.");
 					break;
 			}
+			RushPlugin.aTeamDied(rt);
 		}
 	}
 	

@@ -1,6 +1,7 @@
 package fr.cartooncraft.rush;
 
 import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -12,6 +13,7 @@ public class RushPlayer {
 	private int kills;
 	private int deaths;
 	private double ratio;
+	private boolean isDisqualified;
 	
 	public RushPlayer(Player p) {
 		this.thePlayerName = p.getName();
@@ -55,7 +57,7 @@ public class RushPlayer {
 	
 	public double setRatio() {
 		if(deaths != 0) {
-			this.ratio = kills/deaths;
+			this.ratio = (double)kills/deaths;
 		}
 		else {
 			this.ratio = 0;
@@ -68,7 +70,13 @@ public class RushPlayer {
 	}
 	
 	public String getStringRatio() {
-		DecimalFormat df = new DecimalFormat("0.##");
+		DecimalFormat df = new DecimalFormat();
+		df.setMaximumFractionDigits(2);
+		df.setMinimumFractionDigits(2);
+		df.setDecimalSeparatorAlwaysShown(true);
+		DecimalFormatSymbols dfs = df.getDecimalFormatSymbols();
+		dfs.setDecimalSeparator('.');
+		df.setDecimalFormatSymbols(dfs);
 		return df.format(this.ratio);
 	}
 
@@ -82,6 +90,14 @@ public class RushPlayer {
 	
 	public RushTeam getTeam() {
 		return RushPlugin.getRushTeam(teamName);
+	}
+
+	public boolean isDisqualified() {
+		return isDisqualified;
+	}
+
+	public void setDisqualified(boolean isDisqualified) {
+		this.isDisqualified = isDisqualified;
 	}
 	
 }

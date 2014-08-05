@@ -26,8 +26,18 @@ public class DeathEvent implements Listener {
 
 					rp.refreshDeaths();
 					rp.refreshKills();
+					
 				}
 			}, 2L);
+			Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
+				
+				@Override
+				public void run() {
+
+					rp.setRatio();
+					
+				}
+			}, 5L);
 		}
 	}
 	
