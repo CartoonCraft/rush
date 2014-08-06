@@ -103,7 +103,7 @@ public class RushPlugin extends JavaPlugin {
 	
 	public void setScoreboard() {
 		for(Player p : Bukkit.getOnlinePlayers()) {
-			Scoreboard sb = Bukkit.getScoreboardManager().getNewScoreboard();
+			Scoreboard sb = getDefaultScoreboard();
 			Random r = new Random();
 			String sbobjname = "RUSH"+r.nextInt(10000000);
 			int ping = ((CraftPlayer)p).getHandle().ping;
@@ -116,7 +116,6 @@ public class RushPlugin extends JavaPlugin {
 				obj.getScore(Bukkit.getOfflinePlayer(ChatColor.GREEN+""+ChatColor.ITALIC+"Waiting...")).setScore(8);
 			}
 			else { // if game running
-				sb = addDefaultScoreboard(sb);
 				obj.getScore(Bukkit.getOfflinePlayer(ChatColor.GREEN+""+ChatColor.ITALIC+"PLAYING !")).setScore(8);
 				obj.getScore(Bukkit.getOfflinePlayer("  ")).setScore(7);
 				obj.getScore(Bukkit.getOfflinePlayer(ChatColor.BLUE+""+rushTeams.get("Blue").getRemainingPlayers()+ChatColor.GRAY+"v"+ChatColor.GOLD+""+rushTeams.get("Orange").getRemainingPlayers())).setScore(6);
@@ -314,19 +313,27 @@ public class RushPlugin extends JavaPlugin {
 	}
 	
 	public Scoreboard addDefaultScoreboard(Scoreboard sb) {
-		for(RushTeam rt : getRushTeams()) {
-			Team t = sb.registerNewTeam(rt.getName());
-			t.setAllowFriendlyFire(false);
-			t.setPrefix(""+rt.getColor());
-			t.setSuffix(ChatColor.RESET+"");
-			t.setDisplayName(rt.getDisplayName());
-			for(String playerName : rt.getPlayerList().toArray(new String[0])) {
-				t.addPlayer(Bukkit.getOfflinePlayer(playerName));
+		if(isGameRunning()) {
+			for(RushTeam rt : getRushTeams()) {
+				Team t = sb.registerNewTeam(rt.getName());
+				t.setAllowFriendlyFire(false);
+				t.setPrefix(""+rt.getColor());
+				t.setSuffix(ChatColor.RESET+"");
+				t.setDisplayName(rt.getDisplayName());
+				for(String playerName : rt.getPlayerList().toArray(new String[0]))
+					t.addPlayer(Bukkit.getOfflinePlayer(playerName));
 			}
 		}
 		Objective HPobj = sb.registerNewObjective("HP", "dummy");
-		HPobj.setDisplayName("HP");
+		HPobj.setDisplayName(ChatColor.RED+" \u2764");
 		HPobj.setDisplaySlot(DisplaySlot.BELOW_NAME);
+		for(Player p : Bukkit.getOnlinePlayers())
+			HPobj.getScore(Bukkit.getOfflinePlayer(p.getName())).setScore((int)p.getHealth());
+		
+		Objective Pingobj = sb.registerNewObjective("PING", "dummy");
+		Pingobj.setDisplaySlot(DisplaySlot.PLAYER_LIST);
+		for(Player p : Bukkit.getOnlinePlayers())
+			Pingobj.getScore(Bukkit.getOfflinePlayer(p.getName())).setScore(((CraftPlayer)p).getHandle().ping);
 		
 		return sb;
 	}
