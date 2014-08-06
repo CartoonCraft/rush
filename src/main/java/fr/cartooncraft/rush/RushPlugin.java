@@ -345,7 +345,8 @@ public class RushPlugin extends JavaPlugin {
 	
 	public static void endOfTheGame(final RushTeam winnerTeam) {
 		final Location podiumLoc = getPodiumLoc();
-		Bukkit.getScheduler().scheduleSyncDelayedTask(instance, new Runnable() {
+		Bukkit.getLogger().info(instance.getName());
+		Bukkit.getScheduler().scheduleSyncDelayedTask(((RushPlugin)Bukkit.getPluginManager().getPlugin("Rush")), new Runnable() {
 			
 			@Override
 			public void run() {
