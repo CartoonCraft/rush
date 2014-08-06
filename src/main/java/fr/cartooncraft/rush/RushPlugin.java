@@ -52,10 +52,13 @@ public class RushPlugin extends JavaPlugin {
 	private static String secondsString = "00";
 	private NumberFormat formatter = new DecimalFormat("00");
 	
+	private static RushPlugin instance = null;
+	
 	private static Objective deathsObj;
 	private static Objective killsObj;
 
 	public void onEnable() {
+		instance = this;
 		getLogger().info("CC-Rush is loaded.");
 		createRushTeam("Orange", "Orange");
 		createRushTeam("Blue", "Blue");
@@ -341,7 +344,8 @@ public class RushPlugin extends JavaPlugin {
 	}
 	
 	public static void endOfTheGame(final RushTeam winnerTeam) {
-		Bukkit.getScheduler().scheduleSyncDelayedTask(Bukkit.getPluginManager().getPlugin("Rush"), new Runnable() {
+		final Location podiumLoc = getPodiumLoc();
+		Bukkit.getScheduler().scheduleSyncDelayedTask(instance, new Runnable() {
 			
 			@Override
 			public void run() {
