@@ -24,6 +24,7 @@ import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.Team;
 
 import fr.cartooncraft.rush.events.listeners.ChatEvent;
+import fr.cartooncraft.rush.events.listeners.CraftEvent;
 import fr.cartooncraft.rush.events.listeners.DamageByEntityEvent;
 import fr.cartooncraft.rush.events.listeners.DamageEvent;
 import fr.cartooncraft.rush.events.listeners.DeathEvent;
@@ -60,6 +61,7 @@ public class RushPlugin extends JavaPlugin {
 		createRushTeam("Blue", "Blue");
 		startSBRefresh();
 		Bukkit.getPluginManager().registerEvents(new ChatEvent(this), this);
+		Bukkit.getPluginManager().registerEvents(new CraftEvent(this), this);
 		Bukkit.getPluginManager().registerEvents(new DamageByEntityEvent(this), this);
 		Bukkit.getPluginManager().registerEvents(new DamageEvent(this), this);
 		Bukkit.getPluginManager().registerEvents(new DeathEvent(this), this);
