@@ -286,7 +286,7 @@ public class RushPlugin extends JavaPlugin {
 						message[0] = ChatColor.GRAY+"Stats for "+rp.getTeam().getColor()+rp.getThePlayerName()+ChatColor.GRAY+":";
 						message[1] = ChatColor.GRAY+"Kills: "+ChatColor.GREEN+rp.getKills();
 						message[2] = ChatColor.GRAY+"Deaths: "+ChatColor.GREEN+rp.getDeaths();
-						message[3] = ChatColor.GRAY+"Ratio: "+ChatColor.GREEN+rp.getRatio();
+						message[3] = ChatColor.GRAY+"Ratio: "+ChatColor.GREEN+rp.getStringRatio();
 						sender.sendMessage(message);
 					}
 					else {
