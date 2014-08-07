@@ -10,22 +10,22 @@ public class CCCommand {
 	public String noPermission = ""+ChatColor.RESET+ChatColor.RED+"Sorry, you're not authorized to do this.";
 	public String senderConsole = ""+ChatColor.RESET+ChatColor.RED+"Sorry, you're a console, you can't do this!";
 	
-	public boolean isPlayer(CommandSender sender) {
+	public static boolean isPlayer(CommandSender sender) {
 		return(sender instanceof Player);
 	}
 	
-	public boolean isPlayer(String p) {
+	public static boolean isPlayer(String p) {
 		return(Bukkit.getPlayer(p) != null);
 	}
 	
-	public Player getPlayer(CommandSender sender) {
+	public static Player getPlayer(CommandSender sender) {
 		if(isPlayer(sender)) {
 			return (Player)sender;
 		}
 		return null;
 	}
 	
-	public Player getPlayer(String sender) {
+	public static Player getPlayer(String sender) {
 		if(Bukkit.getPlayer(sender) != null) {
 			return Bukkit.getPlayer(sender);
 		}
@@ -34,7 +34,7 @@ public class CCCommand {
 		}
 	}
 	
-	public boolean areSamePlayers(Player p1, Player p2) {
+	public static boolean areSamePlayers(Player p1, Player p2) {
 		return(p1.getName() == p2.getName());
 	}
 	
@@ -50,7 +50,7 @@ public class CCCommand {
 		return name;
 	}
 	
-	public String getPlayerName(String playerName) {
+	public static String getPlayerName(String playerName) {
 		
 		String name = "";
 		

@@ -130,13 +130,13 @@ public class RushPlugin extends JavaPlugin {
 					obj.getScore(Bukkit.getOfflinePlayer(""+ChatColor.GRAY+"Kills : "+ChatColor.GREEN+rp.getKills())).setScore(4);
 					obj.getScore(Bukkit.getOfflinePlayer(""+ChatColor.GRAY+"Deaths : "+ChatColor.GREEN+rp.getDeaths())).setScore(3);
 					obj.getScore(Bukkit.getOfflinePlayer(""+ChatColor.GRAY+"Ratio : "+ChatColor.GREEN+rp.getStringRatio())).setScore(2);
-					obj.getScore(Bukkit.getOfflinePlayer("    ")).setScore(1);
-					if(hours != 0) {
-						obj.getScore(Bukkit.getOfflinePlayer(ChatColor.WHITE+hoursString+ChatColor.GRAY+":"+ChatColor.WHITE+minutesString+ChatColor.GRAY+":"+ChatColor.WHITE+secondsString)).setScore(0);
-					}
-					else {
-						obj.getScore(Bukkit.getOfflinePlayer(ChatColor.WHITE+minutesString+ChatColor.GRAY+":"+ChatColor.WHITE+secondsString)).setScore(0);
-					}
+				}
+				obj.getScore(Bukkit.getOfflinePlayer("    ")).setScore(1);
+				if(hours != 0) {
+					obj.getScore(Bukkit.getOfflinePlayer(ChatColor.WHITE+hoursString+ChatColor.GRAY+":"+ChatColor.WHITE+minutesString+ChatColor.GRAY+":"+ChatColor.WHITE+secondsString)).setScore(0);
+				}
+				else {
+					obj.getScore(Bukkit.getOfflinePlayer(ChatColor.WHITE+minutesString+ChatColor.GRAY+":"+ChatColor.WHITE+secondsString)).setScore(0);
 				}
 			}
 			obj.setDisplaySlot(DisplaySlot.SIDEBAR);
@@ -279,10 +279,32 @@ public class RushPlugin extends JavaPlugin {
 				sender.sendMessage(ChatColor.RED+"Nope! Usage: /rush <players|teams|start>");
 			}
 		}
-		else if(cmd.getName().equalsIgnoreCase("getobj")) {
-			Scoreboard sb = Bukkit.getScoreboardManager().getMainScoreboard();
-			Objective obj = sb.getObjective(args[0]);
-			sender.sendMessage(""+obj.getScore(Bukkit.getOfflinePlayer(((Player)sender).getName())).getScore());
+		else if(cmd.getName().equalsIgnoreCase("stats")) {
+			if(args.length < 1) {
+				if(CCCommand.isPlayer(args[0])) {
+					Player p = CCCommand.getPlayer(args[0]);
+					if(isARushPlayer(p)) {
+						RushPlayer rp = getRushPlayer(p);
+						String[] message = {};
+						message[0] = ChatColor.GRAY+"Stats for "+rp.getTeam().getColor()+rp.getThePlayerName()+ChatColor.GRAY+":";
+						message[1] = ChatColor.GRAY+"Kills: "+ChatColor.GREEN+rp.getKills();
+						message[2] = ChatColor.GRAY+"Deaths: "+ChatColor.GREEN+rp.getDeaths();
+						message[3] = ChatColor.GRAY+"Ratio: "+ChatColor.GREEN+rp.getRatio();
+						message[4] = ChatColor.GRAY+"";
+						if(p.getInventory().getArmorContents()[1] != null)
+							message[5] = ChatColor.GRAY+"Chestplate: "+ChatColor.GREEN+p.getInventory().getArmorContents()[1].getItemMeta().getLore().get(0);
+					}
+					else {
+						sender.sendMessage(ChatColor.RED+"Hmmm... "+p.getName()+" isn't a rush player!");
+					}
+				}
+				else {
+					sender.sendMessage(CCCommand.getPlayerNotFoundSentence(args[0]));
+				}
+			}
+			else {
+				sender.sendMessage(ChatColor.RED+"Nope! Usage: /stats <player>");
+			}
 		}
 		else {
 			return false;
