@@ -367,19 +367,10 @@ public class RushPlugin extends JavaPlugin {
 	}
 	
 	public static void endOfTheGame(final RushTeam winnerTeam) {
-		final Location podiumLoc = getPodiumLoc();
-		Bukkit.getLogger().info(instance.getName());
-		Bukkit.getScheduler().scheduleSyncDelayedTask(((RushPlugin)Bukkit.getPluginManager().getPlugin("Rush")), new Runnable() {
-			
-			@Override
-			public void run() {
-				
-				Bukkit.broadcastMessage(""+ChatColor.RED+ChatColor.BOLD+"Congrats! The "+winnerTeam.getColor()+ChatColor.BOLD+winnerTeam.getName()+ChatColor.RED+ChatColor.BOLD+" team has won with "+winnerTeam.getRemainingPlayers()+" player(s) remaining, in "+hours+" hour(s), "+minutes+" minute(s) and "+seconds+" second(s)!");
-				for(Player p : Bukkit.getOnlinePlayers())
-					p.teleport(podiumLoc);
-				setGameFinished(true);
-			}
-		}, 2L);
+		Bukkit.broadcastMessage(""+ChatColor.RED+ChatColor.BOLD+"Congrats! The "+winnerTeam.getColor()+ChatColor.BOLD+winnerTeam.getName()+ChatColor.RED+ChatColor.BOLD+" team has won with "+winnerTeam.getRemainingPlayers()+" player(s) remaining, in "+hours+" hour(s), "+minutes+" minute(s) and "+seconds+" second(s)!");
+		for(Player p : Bukkit.getOnlinePlayers())
+			p.teleport(getPodiumLoc());
+		setGameFinished(true);
 	}
 	
 	public static void aTeamDied(RushTeam rushTeam) {
