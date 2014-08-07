@@ -293,6 +293,7 @@ public class RushPlugin extends JavaPlugin {
 						message[4] = ChatColor.GRAY+"";
 						if(p.getInventory().getArmorContents()[1] != null)
 							message[5] = ChatColor.GRAY+"Chestplate: "+ChatColor.GREEN+p.getInventory().getArmorContents()[1].getItemMeta().getLore().get(0);
+						sender.sendMessage(message);
 					}
 					else {
 						sender.sendMessage(ChatColor.RED+"Hmmm... "+p.getName()+" isn't a rush player!");
