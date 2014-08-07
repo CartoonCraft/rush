@@ -52,13 +52,10 @@ public class RushPlugin extends JavaPlugin {
 	private static String secondsString = "00";
 	private NumberFormat formatter = new DecimalFormat("00");
 	
-	private static RushPlugin instance = null;
-	
 	private static Objective deathsObj;
 	private static Objective killsObj;
 
 	public void onEnable() {
-		instance = this;
 		getLogger().info("CC-Rush is loaded.");
 		createRushTeam("Orange", "Orange");
 		createRushTeam("Blue", "Blue");
@@ -280,19 +277,16 @@ public class RushPlugin extends JavaPlugin {
 			}
 		}
 		else if(cmd.getName().equalsIgnoreCase("stats")) {
-			if(args.length < 1) {
+			if(args.length < 2) {
 				if(CCCommand.isPlayer(args[0])) {
 					Player p = CCCommand.getPlayer(args[0]);
 					if(isARushPlayer(p)) {
 						RushPlayer rp = getRushPlayer(p);
-						String[] message = {};
+						String[] message = {"", "", "", ""};
 						message[0] = ChatColor.GRAY+"Stats for "+rp.getTeam().getColor()+rp.getThePlayerName()+ChatColor.GRAY+":";
 						message[1] = ChatColor.GRAY+"Kills: "+ChatColor.GREEN+rp.getKills();
 						message[2] = ChatColor.GRAY+"Deaths: "+ChatColor.GREEN+rp.getDeaths();
 						message[3] = ChatColor.GRAY+"Ratio: "+ChatColor.GREEN+rp.getRatio();
-						message[4] = ChatColor.GRAY+"";
-						if(p.getInventory().getArmorContents()[1] != null)
-							message[5] = ChatColor.GRAY+"Chestplate: "+ChatColor.GREEN+p.getInventory().getArmorContents()[1].getItemMeta().getLore().get(0);
 						sender.sendMessage(message);
 					}
 					else {
@@ -366,14 +360,20 @@ public class RushPlugin extends JavaPlugin {
 		return sb;
 	}
 	
-	public static void endOfTheGame(final RushTeam winnerTeam) {
+	public void endOfTheGame(final RushTeam winnerTeam) {
 		Bukkit.broadcastMessage(""+ChatColor.RED+ChatColor.BOLD+"Congrats! The "+winnerTeam.getColor()+ChatColor.BOLD+winnerTeam.getName()+ChatColor.RED+ChatColor.BOLD+" team has won with "+winnerTeam.getRemainingPlayers()+" player(s) remaining, in "+hours+" hour(s), "+minutes+" minute(s) and "+seconds+" second(s)!");
-		for(Player p : Bukkit.getOnlinePlayers())
-			p.teleport(getPodiumLoc());
+		Bukkit.getScheduler().scheduleSyncDelayedTask(this, new Runnable() {
+		
+			@Override
+			public void run() {
+				for(Player p : Bukkit.getOnlinePlayers())
+					p.teleport(getPodiumLoc());				
+			}
+		}, 2L);
 		setGameFinished(true);
 	}
 	
-	public static void aTeamDied(RushTeam rushTeam) {
+	public void aTeamDied(RushTeam rushTeam) {
 		deadTeams.put(rushTeam.getName(), rushTeam);
 		int remainingTeams = 0;
 		RushTeam remainingTeam = new RushTeam("lol", "lol");

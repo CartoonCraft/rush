@@ -42,7 +42,7 @@ public class RespawnEvent implements Listener {
 						Bukkit.broadcastMessage(rt.getColor()+e.getPlayer().getName()+ChatColor.GRAY+" is disqualified. "+rt.getRemainingPlayers()+" players remaining.");
 						break;
 				}
-				RushPlugin.aTeamDied(rt);
+				plugin.aTeamDied(rt);
 			}
 		}
 	}
