@@ -60,7 +60,7 @@ public class RushPlayer {
 			this.ratio = (double)kills/deaths;
 		}
 		else {
-			this.ratio = 0;
+			this.ratio = (double)kills/1;
 		}
 		return this.ratio;
 	}
