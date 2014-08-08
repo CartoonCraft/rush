@@ -379,16 +379,6 @@ public class RushPlugin extends JavaPlugin {
 		Collections.sort(rps, Collections.reverseOrder());
 		
 		// End Rank
-		/*
-		 * for(int i = 0; i < rps.size(); i++) {
-			int i2 = i + 1;
-			getLogger().info(i2+" :"+rps.get(i).getThePlayerName());
-			}
-		 * 
-		 * 
-		 * 
-		 * 
-		 */	
 		
 		Block firstSignBlock = firstSignLoc.getBlock();
 		Block secondSignBlock = secondSignLoc.getBlock();
@@ -397,10 +387,6 @@ public class RushPlugin extends JavaPlugin {
 		Sign firstSign = (Sign)firstSignBlock.getState();
 		Sign secondSign = (Sign)secondSignBlock.getState();
 		Sign thirdSign = (Sign)thirdSignBlock.getState();
-		
-		Bukkit.getLogger().info(firstSign.getLine(0));
-		Bukkit.getLogger().info(secondSign.getLine(0));
-		Bukkit.getLogger().info(thirdSign.getLine(0));
 		
 		firstSign.setLine(1, rps.get(0).getThePlayerName());
 		switch(rps.get(0).getKills()) {
