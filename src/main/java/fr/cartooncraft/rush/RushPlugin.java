@@ -406,16 +406,20 @@ public class RushPlugin extends JavaPlugin {
 		switch(rps.get(0).getKills()) {
 			case 0:
 				firstSign.setLine(2, 0+" kill");
+				break;
 			case 1:
 				firstSign.setLine(2, 1+" kill");
+				break;
 			default:
 				firstSign.setLine(2, rps.get(0).getKills()+" kills");
 		}
 		switch(rps.get(0).getDeaths()) {
 			case 0:
 				secondSign.setLine(2, 0+" death");
+				break;
 			case 1:
 				secondSign.setLine(2, 1+" death");
+				break;
 			default:
 				secondSign.setLine(2, rps.get(0).getDeaths()+" deaths");
 		}
@@ -426,16 +430,20 @@ public class RushPlugin extends JavaPlugin {
 			switch(rps.get(1).getKills()) {
 				case 0:
 					secondSign.setLine(2, 0+" kill");
+					break;
 				case 1:
 					secondSign.setLine(2, 1+" kill");
+					break;
 				default:
 					secondSign.setLine(2, rps.get(1).getKills()+" kills");
 			}
 			switch(rps.get(1).getDeaths()) {
 				case 0:
 					secondSign.setLine(2, 0+" death");
+					break;
 				case 1:
 					secondSign.setLine(2, 1+" death");
+					break;
 				default:
 					secondSign.setLine(2, rps.get(1).getDeaths()+" deaths");
 			}
@@ -447,16 +455,20 @@ public class RushPlugin extends JavaPlugin {
 			switch(rps.get(2).getKills()) {
 				case 0:
 					secondSign.setLine(2, 0+" kill");
+					break;
 				case 1:
 					secondSign.setLine(2, 1+" kill");
+					break;
 				default:
 					secondSign.setLine(2, rps.get(2).getKills()+" kills");
 			}
 			switch(rps.get(2).getDeaths()) {
 				case 0:
 					secondSign.setLine(2, 0+" death");
+					break;
 				case 1:
 					secondSign.setLine(2, 1+" death");
+					break;
 				default:
 					secondSign.setLine(2, rps.get(2).getDeaths()+" deaths");
 			}
