@@ -361,6 +361,12 @@ public class RushPlugin extends JavaPlugin {
 	}
 	
 	public void endOfTheGame(final RushTeam winnerTeam) {
+		
+		// Rank
+		
+		
+		
+		// End Rank
 		Bukkit.broadcastMessage(""+ChatColor.RED+ChatColor.BOLD+"Congrats! The "+winnerTeam.getColor()+ChatColor.BOLD+winnerTeam.getName()+ChatColor.RED+ChatColor.BOLD+" team has won with "+winnerTeam.getRemainingPlayers()+" player(s) remaining, in "+hours+" hour(s), "+minutes+" minute(s) and "+seconds+" second(s)!");
 		Bukkit.getScheduler().scheduleSyncDelayedTask(this, new Runnable() {
 		

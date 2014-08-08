@@ -6,7 +6,7 @@ import java.text.DecimalFormatSymbols;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
-public class RushPlayer {
+public class RushPlayer implements Comparable<RushPlayer> {
 	
 	private String thePlayerName;
 	private String teamName;
@@ -98,6 +98,11 @@ public class RushPlayer {
 
 	public void setDisqualified(boolean isDisqualified) {
 		this.isDisqualified = isDisqualified;
+	}
+
+	@Override
+	public int compareTo(RushPlayer o) {
+		return kills - o.getKills();
 	}
 	
 }
