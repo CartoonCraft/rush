@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
@@ -14,6 +15,8 @@ import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.block.Block;
+import org.bukkit.block.Sign;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.craftbukkit.v1_6_R3.entity.CraftPlayer;
@@ -45,6 +48,9 @@ public class RushPlugin extends JavaPlugin {
 	private static boolean isGameFinished = false;
 	
 	private static Location podiumLoc;
+	private static Location firstSignLoc;
+	private static Location secondSignLoc;
+	private static Location thirdSignLoc;
 	
 	private static int hours = 0;
 	private static int minutes = 0;
@@ -72,6 +78,9 @@ public class RushPlugin extends JavaPlugin {
 		Bukkit.getPluginManager().registerEvents(new LoginEvent(this), this);
 		Bukkit.getPluginManager().registerEvents(new RespawnEvent(this), this);
 		podiumLoc = new Location(Bukkit.getWorlds().get(0), -221.5, 76, 58.5);
+		firstSignLoc = new Location(Bukkit.getWorlds().get(0), -218, 76, 62);
+		secondSignLoc = new Location(Bukkit.getWorlds().get(0), -217, 75, 62);
+		thirdSignLoc = new Location(Bukkit.getWorlds().get(0), -219, 75, 62);
 	}
 	
 	public void onDisable() {
@@ -366,12 +375,93 @@ public class RushPlugin extends JavaPlugin {
 		
 		// Rank
 		
-		RushPlayer[] rps = getRushPlayers();
-		Collections.sort(Arrays.asList(rps));
+		List<RushPlayer> rps = Arrays.asList(getRushPlayers());
+		Collections.sort(rps, Collections.reverseOrder());
 		
 		// End Rank
+		/*
+		 * for(int i = 0; i < rps.size(); i++) {
+			int i2 = i + 1;
+			getLogger().info(i2+" :"+rps.get(i).getThePlayerName());
+			}
+		 * 
+		 * 
+		 * 
+		 * 
+		 */	
 		
-		rps.toString();
+		Block firstSignBlock = firstSignLoc.getBlock();
+		Block secondSignBlock = secondSignLoc.getBlock();
+		Block thirdSignBlock = thirdSignLoc.getBlock();
+		
+		Sign firstSign = (Sign)firstSignBlock.getState();
+		Sign secondSign = (Sign)secondSignBlock.getState();
+		Sign thirdSign = (Sign)thirdSignBlock.getState();
+		
+		Bukkit.getLogger().info(firstSign.getLine(0));
+		Bukkit.getLogger().info(secondSign.getLine(0));
+		Bukkit.getLogger().info(thirdSign.getLine(0));
+		
+		firstSign.setLine(1, rps.get(0).getThePlayerName());
+		switch(rps.get(0).getKills()) {
+			case 0:
+				firstSign.setLine(2, 0+" kill");
+			case 1:
+				firstSign.setLine(2, 1+" kill");
+			default:
+				firstSign.setLine(2, rps.get(0).getKills()+" kills");
+		}
+		switch(rps.get(0).getDeaths()) {
+			case 0:
+				secondSign.setLine(2, 0+" death");
+			case 1:
+				secondSign.setLine(2, 1+" death");
+			default:
+				secondSign.setLine(2, rps.get(0).getDeaths()+" deaths");
+		}
+		firstSign.update(true);
+		
+		if(rps.size() > 1) {
+			secondSign.setLine(1, rps.get(1).getThePlayerName());
+			switch(rps.get(1).getKills()) {
+				case 0:
+					secondSign.setLine(2, 0+" kill");
+				case 1:
+					secondSign.setLine(2, 1+" kill");
+				default:
+					secondSign.setLine(2, rps.get(1).getKills()+" kills");
+			}
+			switch(rps.get(1).getDeaths()) {
+				case 0:
+					secondSign.setLine(2, 0+" death");
+				case 1:
+					secondSign.setLine(2, 1+" death");
+				default:
+					secondSign.setLine(2, rps.get(1).getDeaths()+" deaths");
+			}
+			secondSign.update(true);
+		}
+		
+		if(rps.size() > 2) {
+			thirdSign.setLine(1, rps.get(2).getThePlayerName());
+			switch(rps.get(2).getKills()) {
+				case 0:
+					secondSign.setLine(2, 0+" kill");
+				case 1:
+					secondSign.setLine(2, 1+" kill");
+				default:
+					secondSign.setLine(2, rps.get(2).getKills()+" kills");
+			}
+			switch(rps.get(2).getDeaths()) {
+				case 0:
+					secondSign.setLine(2, 0+" death");
+				case 1:
+					secondSign.setLine(2, 1+" death");
+				default:
+					secondSign.setLine(2, rps.get(2).getDeaths()+" deaths");
+			}
+			thirdSign.update(true);
+		}
 		
 		Bukkit.broadcastMessage(""+ChatColor.RED+ChatColor.BOLD+"Congrats! The "+winnerTeam.getColor()+ChatColor.BOLD+winnerTeam.getName()+ChatColor.RED+ChatColor.BOLD+" team has won with "+winnerTeam.getRemainingPlayers()+" player(s) remaining, in "+hours+" hour(s), "+minutes+" minute(s) and "+seconds+" second(s)!");
 		Bukkit.getScheduler().scheduleSyncDelayedTask(this, new Runnable() {
