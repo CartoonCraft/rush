@@ -3,6 +3,8 @@ package fr.cartooncraft.rush;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
@@ -364,9 +366,13 @@ public class RushPlugin extends JavaPlugin {
 		
 		// Rank
 		
-		
+		RushPlayer[] rps = getRushPlayers();
+		Collections.sort(Arrays.asList(rps));
 		
 		// End Rank
+		
+		rps.toString();
+		
 		Bukkit.broadcastMessage(""+ChatColor.RED+ChatColor.BOLD+"Congrats! The "+winnerTeam.getColor()+ChatColor.BOLD+winnerTeam.getName()+ChatColor.RED+ChatColor.BOLD+" team has won with "+winnerTeam.getRemainingPlayers()+" player(s) remaining, in "+hours+" hour(s), "+minutes+" minute(s) and "+seconds+" second(s)!");
 		Bukkit.getScheduler().scheduleSyncDelayedTask(this, new Runnable() {
 		

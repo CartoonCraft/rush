@@ -105,4 +105,8 @@ public class RushPlayer implements Comparable<RushPlayer> {
 		return kills - o.getKills();
 	}
 	
+	public String toString() {
+		return "playerName:"+thePlayerName+"; teamName:"+teamName+"; kills:"+kills+"; deaths: "+deaths+"; ratio:"+ratio+"; isDisqualified"+isDisqualified;
+	}
+	
 }
