@@ -55,14 +55,13 @@ public class RushPlayer implements Comparable<RushPlayer> {
 		this.deaths = deaths;
 	}
 	
-	public double setRatio() {
+	public void setRatio() {
 		if(deaths != 0) {
 			this.ratio = (double)kills/deaths;
 		}
 		else {
 			this.ratio = (double)kills/1;
 		}
-		return this.ratio;
 	}
 	
 	public double getRatio() {
@@ -102,7 +101,23 @@ public class RushPlayer implements Comparable<RushPlayer> {
 
 	@Override
 	public int compareTo(RushPlayer o) {
-		return kills - o.getKills();
+		int killsA = kills;
+		int killsB = o.getKills();
+		if(killsA == killsB) {
+			int deathsA = deaths;
+			int deathsB = o.getDeaths();
+			if(deathsA == deathsB)
+				return 0;
+			else if(deathsA == deathsB)
+				return 1;
+			else
+				return -1;
+		}
+		else if(killsA > killsB)
+			return 1;
+		else
+			return -1;
+		//return kills - o.getKills();
 	}
 	
 	public String toString() {

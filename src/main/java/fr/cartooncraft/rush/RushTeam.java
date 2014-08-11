@@ -95,8 +95,13 @@ public class RushTeam {
 		return ratio;
 	}
 
-	public void setRatio(double ratio) {
-		this.ratio = ratio;
+	public void setRatio() {
+		if(deaths != 0) {
+			this.ratio = (double)kills/deaths;
+		}
+		else {
+			this.ratio = (double)kills/1;
+		}
 	}
 	
 }
