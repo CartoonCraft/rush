@@ -28,6 +28,8 @@ public class DamageByEntityEvent implements Listener {
 					if(!RushPlugin.isARushPlayer(((Player)e.getEntity()))) {
 						e.setCancelled(true);
 					}
+					else if(RushPlugin.getRushPlayer(((Player)e.getEntity())).isDisqualified())
+						e.setCancelled(true);
 				}
 			}
 			else {
