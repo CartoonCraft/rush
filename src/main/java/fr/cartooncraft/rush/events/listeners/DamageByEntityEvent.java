@@ -5,6 +5,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 
+import fr.cartooncraft.rush.RushPlayer;
 import fr.cartooncraft.rush.RushPlugin;
 
 public class DamageByEntityEvent implements Listener {
@@ -24,12 +25,14 @@ public class DamageByEntityEvent implements Listener {
 		if(e.getDamager() instanceof Player) {
 			Player p = (Player)e.getDamager();
 			if(RushPlugin.isARushPlayer(p.getName())) {
-				if(e.getEntity() instanceof Player) {
-					if(!RushPlugin.isARushPlayer(((Player)e.getEntity()))) {
-						e.setCancelled(true);
+				RushPlayer rp = RushPlugin.getRushPlayer(p);
+				if(!rp.isDisqualified()) {
+					if(e.getEntity() instanceof Player) {
+						if(!RushPlugin.isARushPlayer(((Player)e.getEntity())))
+							e.setCancelled(true);
+						else if(RushPlugin.getRushPlayer(((Player)e.getEntity())).isDisqualified())
+							e.setCancelled(true);
 					}
-					else if(RushPlugin.getRushPlayer(((Player)e.getEntity())).isDisqualified())
-						e.setCancelled(true);
 				}
 			}
 			else {

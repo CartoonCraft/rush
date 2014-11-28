@@ -356,7 +356,7 @@ public class RushPlugin extends JavaPlugin {
 				t.setSuffix(ChatColor.RESET+"");
 				t.setDisplayName(rt.getDisplayName());
 				for(String playerName : rt.getPlayerList().toArray(new String[0]))
-					t.addPlayer(Bukkit.getOfflinePlayer(Bukkit.getPlayer(playerName).getUniqueId()));
+					t.addPlayer(Bukkit.getOfflinePlayer(playerName));
 			}
 		}
 		Objective HPobj = sb.registerNewObjective("HP", "dummy");
@@ -451,7 +451,7 @@ public class RushPlugin extends JavaPlugin {
 				default:
 					thirdSign.setLine(2, rps.get(2).getKills()+" kills");
 			}
-			switch(rps.get(3).getDeaths()) {
+			switch(rps.get(2).getDeaths()) {
 				case 0:
 					thirdSign.setLine(3, 0+" death");
 					break;

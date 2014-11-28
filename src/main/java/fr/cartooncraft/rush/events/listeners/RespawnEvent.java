@@ -2,6 +2,7 @@ package fr.cartooncraft.rush.events.listeners;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -23,11 +24,13 @@ public class RespawnEvent implements Listener {
 	public void onRespawn(PlayerRespawnEvent e) {
 		if(RushPlugin.isGameFinished()) {
 			e.getPlayer().teleport(RushPlugin.getPodiumLoc());
+			e.getPlayer().setGameMode(GameMode.ADVENTURE);
 		}
 		else {
 			Player p = e.getPlayer();
 			RushPlayer rp = RushPlugin.getRushPlayer(p);
 			if(!e.isBedSpawn() && RushPlugin.isGameRunning() && !rp.isDisqualified()) {
+				p.setGameMode(GameMode.ADVENTURE);
 				rp.setDisqualified(true);
 				RushTeam rt = RushPlugin.getRushPlayer(p).getTeam();
 				rt.setRemainingPlayers(rt.getRemainingPlayers() - 1);			

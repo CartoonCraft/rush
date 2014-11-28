@@ -23,7 +23,8 @@ public class LoginEvent implements Listener {
 		if(!RushPlugin.isGameRunning() || RushPlugin.isGameFinished())
 			p.setGameMode(GameMode.ADVENTURE);
 		if(RushPlugin.isGameRunning() && !RushPlugin.isGameFinished())
-			p.sendMessage(ChatColor.GRAY+"The game is already launched. But you can spectate!");
+			if(!RushPlugin.isARushPlayer(e.getPlayer()))
+				p.sendMessage(ChatColor.GRAY+"The game is already launched. But you can spectate!");
 		if(RushPlugin.isGameFinished())
 			p.teleport(RushPlugin.getPodiumLoc());
 	}
