@@ -10,6 +10,7 @@ import org.bukkit.entity.Player;
 public class RushPlayer implements Comparable<RushPlayer> {
 	
 	private UUID thePlayerUUID;
+	private String thePlayerName;
 	private String teamName;
 	private int kills;
 	private int deaths;
@@ -22,15 +23,22 @@ public class RushPlayer implements Comparable<RushPlayer> {
 	
 	@SuppressWarnings("deprecation")
 	public RushPlayer(String p) {
+		this.thePlayerName = Bukkit.getPlayer(p).getName();
 		this.thePlayerUUID = Bukkit.getPlayer(p).getUniqueId();
+	}
+
+	public RushPlayer(UUID u) {
+		this.thePlayerUUID = u;
+		this.thePlayerName = Bukkit.getPlayer(u).getName();
+	}
+	
+	@SuppressWarnings("deprecation")
+	public Player getPlayer() {
+		return Bukkit.getPlayer(this.thePlayerName);
 	}
 	
 	public String getThePlayerName() {
-		return Bukkit.getPlayer(thePlayerUUID).getName();
-	}
-	
-	public Player getPlayer() {
-		return Bukkit.getPlayer(thePlayerUUID);
+		return this.thePlayerName;
 	}
 
 	public int getKills() {
@@ -110,10 +118,10 @@ public class RushPlayer implements Comparable<RushPlayer> {
 			int deathsB = o.getDeaths();
 			if(deathsA == deathsB)
 				return 0;
-			else if(deathsA == deathsB)
-				return 1;
-			else
+			else if(deathsA > deathsB)
 				return -1;
+			else
+				return 1;
 		}
 		else if(killsA > killsB)
 			return 1;
@@ -123,7 +131,10 @@ public class RushPlayer implements Comparable<RushPlayer> {
 	}
 	
 	public String toString() {
-		return "playerName:"+this.getThePlayerName()+"; teamName:"+teamName+"; kills:"+kills+"; deaths: "+deaths+"; ratio:"+ratio+"; isDisqualified"+isDisqualified;
+		System.out.println(thePlayerUUID.toString());
+		//System.out.println(this.getThePlayerName());
+		//return "playerName:"+this.getThePlayerName()+"; teamName:"+teamName+"; kills:"+kills+"; deaths: "+deaths+"; ratio:"+ratio+"; isDisqualified"+isDisqualified;
+		return "teamName:"+teamName+"; kills:"+kills+"; deaths: "+deaths+"; ratio:"+ratio+"; isDisqualified: "+isDisqualified;
 	}
 	
 }

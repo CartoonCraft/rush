@@ -123,7 +123,7 @@ public class RushPlugin extends JavaPlugin {
 			Objective obj = sb.registerNewObjective(sbobjname, "dummy");
 			obj = sb.getObjective(sbobjname);
 			obj.setDisplayName(ChatColor.GREEN+"RUSH");
-			obj.getScore(ChatColor.GRAY+"Ping : "+ChatColor.GREEN+ping).setScore(10);
+			obj.getScore(max16Chars(ChatColor.GRAY+"Ping : "+ChatColor.GREEN+ping)).setScore(10);
 			obj.getScore(" ").setScore(9);
 			if(!isGameRunning()) {
 				obj.getScore(ChatColor.GREEN+""+ChatColor.ITALIC+"Waiting...").setScore(8);
@@ -131,20 +131,20 @@ public class RushPlugin extends JavaPlugin {
 			else { // if game running
 				obj.getScore(ChatColor.GREEN+""+ChatColor.ITALIC+"PLAYING !").setScore(8);
 				obj.getScore("  ").setScore(7);
-				obj.getScore(ChatColor.BLUE+""+rushTeams.get("Blue").getRemainingPlayers()+ChatColor.GRAY+"v"+ChatColor.GOLD+""+rushTeams.get("Orange").getRemainingPlayers()).setScore(6);
+				obj.getScore(max16Chars(ChatColor.BLUE+""+rushTeams.get("Blue").getRemainingPlayers()+ChatColor.GRAY+"v"+ChatColor.GOLD+""+rushTeams.get("Orange").getRemainingPlayers())).setScore(6);
 				if(isARushPlayer(p)) {
 					RushPlayer rp = getRushPlayer(p);
 					obj.getScore("   ").setScore(5);
-					obj.getScore(""+ChatColor.GRAY+"Kills : "+ChatColor.GREEN+rp.getKills()).setScore(4);
-					obj.getScore(""+ChatColor.GRAY+"Deaths : "+ChatColor.GREEN+rp.getDeaths()).setScore(3);
-					obj.getScore(""+ChatColor.GRAY+"Ratio : "+ChatColor.GREEN+rp.getStringRatio()).setScore(2);
+					obj.getScore(max16Chars(""+ChatColor.GRAY+"Kills : "+ChatColor.GREEN+rp.getKills())).setScore(4);
+					obj.getScore(max16Chars(""+ChatColor.GRAY+"Deaths : "+ChatColor.GREEN+rp.getDeaths())).setScore(3);
+					obj.getScore(max16Chars(""+ChatColor.GRAY+"Ratio : "+ChatColor.GREEN+rp.getStringRatio())).setScore(2);
 				}
 				obj.getScore("    ").setScore(1);
 				if(hours != 0) {
-					obj.getScore(ChatColor.WHITE+hoursString+ChatColor.GRAY+":"+ChatColor.WHITE+minutesString+ChatColor.GRAY+":"+ChatColor.WHITE+secondsString).setScore(0);
+					obj.getScore(max16Chars(ChatColor.WHITE+hoursString+ChatColor.GRAY+":"+ChatColor.WHITE+minutesString+ChatColor.GRAY+":"+ChatColor.WHITE+secondsString)).setScore(0);
 				}
 				else {
-					obj.getScore(ChatColor.WHITE+minutesString+ChatColor.GRAY+":"+ChatColor.WHITE+secondsString).setScore(0);
+					obj.getScore(max16Chars(ChatColor.WHITE+minutesString+ChatColor.GRAY+":"+ChatColor.WHITE+secondsString)).setScore(0);
 				}
 			}
 			obj.setDisplaySlot(DisplaySlot.SIDEBAR);
@@ -379,6 +379,7 @@ public class RushPlugin extends JavaPlugin {
 		
 		List<RushPlayer> rps = Arrays.asList(getRushPlayers());
 		Collections.sort(rps, Collections.reverseOrder());
+		System.out.println(rps);
 		
 		// End Rank
 		
@@ -588,6 +589,12 @@ public class RushPlugin extends JavaPlugin {
 	
 	public static Location getPodiumLoc() {
 		return podiumLoc;
+	}
+	
+	public static String max16Chars(String s) {
+		if(s.length() > 16)
+			return s.substring(0, 16);
+		return s;
 	}
 	
 }
