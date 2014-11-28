@@ -2,13 +2,14 @@ package fr.cartooncraft.rush;
 
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
+import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 public class RushPlayer implements Comparable<RushPlayer> {
 	
-	private String thePlayerName;
+	private UUID thePlayerUUID;
 	private String teamName;
 	private int kills;
 	private int deaths;
@@ -16,19 +17,20 @@ public class RushPlayer implements Comparable<RushPlayer> {
 	private boolean isDisqualified;
 	
 	public RushPlayer(Player p) {
-		this.thePlayerName = p.getName();
+		this.thePlayerUUID = p.getUniqueId();
 	}
 	
+	@SuppressWarnings("deprecation")
 	public RushPlayer(String p) {
-		this.thePlayerName = p;
+		this.thePlayerUUID = Bukkit.getPlayer(p).getUniqueId();
 	}
 	
 	public String getThePlayerName() {
-		return thePlayerName;
+		return Bukkit.getPlayer(thePlayerUUID).getName();
 	}
 	
 	public Player getPlayer() {
-		return Bukkit.getPlayerExact(thePlayerName);
+		return Bukkit.getPlayer(thePlayerUUID);
 	}
 
 	public int getKills() {
@@ -36,11 +38,11 @@ public class RushPlayer implements Comparable<RushPlayer> {
 	}
 	
 	public void refreshKills() {
-		this.kills = RushPlugin.getKillsObj().getScore(Bukkit.getOfflinePlayer(thePlayerName)).getScore();
+		this.kills = RushPlugin.getKillsObj().getScore(this.getThePlayerName()).getScore();
 	}
 	
 	public void refreshDeaths() {
-		this.deaths = RushPlugin.getDeathsObj().getScore(Bukkit.getOfflinePlayer(thePlayerName)).getScore();
+		this.deaths = RushPlugin.getDeathsObj().getScore(this.getThePlayerName()).getScore();
 	}
 
 	public void setKills(int kills) {
@@ -121,7 +123,7 @@ public class RushPlayer implements Comparable<RushPlayer> {
 	}
 	
 	public String toString() {
-		return "playerName:"+thePlayerName+"; teamName:"+teamName+"; kills:"+kills+"; deaths: "+deaths+"; ratio:"+ratio+"; isDisqualified"+isDisqualified;
+		return "playerName:"+this.getThePlayerName()+"; teamName:"+teamName+"; kills:"+kills+"; deaths: "+deaths+"; ratio:"+ratio+"; isDisqualified"+isDisqualified;
 	}
 	
 }

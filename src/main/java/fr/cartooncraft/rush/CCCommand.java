@@ -14,6 +14,7 @@ public class CCCommand {
 		return(sender instanceof Player);
 	}
 	
+	@SuppressWarnings("deprecation")
 	public static boolean isPlayer(String p) {
 		return(Bukkit.getPlayer(p) != null);
 	}
@@ -25,6 +26,7 @@ public class CCCommand {
 		return null;
 	}
 	
+	@SuppressWarnings("deprecation")
 	public static Player getPlayer(String sender) {
 		if(Bukkit.getPlayer(sender) != null) {
 			return Bukkit.getPlayer(sender);
@@ -50,6 +52,7 @@ public class CCCommand {
 		return name;
 	}
 	
+	@SuppressWarnings("deprecation")
 	public static String getPlayerName(String playerName) {
 		
 		String name = "";
